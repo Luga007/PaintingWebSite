@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Canvas Paint</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="app">
+    <header id="toolbar">
+      <div class="toolbar-left">
+        <span class="logo">🎨 PaintJS</span>
+      </div>
+
+      <div class="toolbar-center">
+        <!-- Tools -->
+        <div class="tool-group" id="tools">
+          <button class="tool-btn active" data-tool="pen" title="Pen (P)">
+            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.42l-2.34-2.34a1 1 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="brush" title="Brush (B)">
+            <svg viewBox="0 0 24 24"><path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37-1.34-1.34a1 1 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96a1 1 0 0 0 0-1.41z"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="eraser" title="Eraser (E)">
+            <svg viewBox="0 0 24 24"><path d="M15.14 3 3 15.14 8.86 21H12l9-9-5.86-5.87zM5.92 16.37l5.56-5.56 3.71 3.71-3.67 3.67H9.63l-3.71-3.82z"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="fill" title="Fill (F)">
+            <svg viewBox="0 0 24 24"><path d="M16.56 8.94 7.62 0 6.21 1.41l2.38 2.38-5.15 5.15a1.49 1.49 0 0 0 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10 10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/><path d="M0 20h24v4H0z"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="line" title="Line (L)">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3l5 5-1.41 1.41L13 9.83V17h-2V9.83l-2.59 2.58L7 11l5-5z"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="rect" title="Rectangle (R)">
+            <svg viewBox="0 0 24 24"><path d="M3 5v14h18V5H3zm16 12H5V7h14v10z"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="circle" title="Circle (C)">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+          </button>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Stroke size -->
+        <div class="tool-group" id="sizes">
+          <label class="label-muted">Size</label>
+          <input type="range" id="sizeSlider" min="1" max="80" value="5"/>
+          <span id="sizeDisplay">5</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Opacity -->
+        <div class="tool-group" id="opacities">
+          <label class="label-muted">Opacity</label>
+          <input type="range" id="opacitySlider" min="1" max="100" value="100"/>
+          <span id="opacityDisplay">100%</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Colors -->
+        <div class="tool-group" id="colors">
+          <div class="color-preview-wrap">
+            <div id="colorPreview"></div>
+            <input type="color" id="colorPicker" value="#222222" title="Pick color"/>
+          </div>
+          <div class="palette">
+            <div class="swatch" style="background:#000000" data-color="#000000"></div>
+            <div class="swatch" style="background:#ffffff" data-color="#ffffff"></div>
+            <div class="swatch" style="background:#ef4444" data-color="#ef4444"></div>
+            <div class="swatch" style="background:#f97316" data-color="#f97316"></div>
+            <div class="swatch" style="background:#eab308" data-color="#eab308"></div>
+            <div class="swatch" style="background:#22c55e" data-color="#22c55e"></div>
+            <div class="swatch" style="background:#3b82f6" data-color="#3b82f6"></div>
+            <div class="swatch" style="background:#a855f7" data-color="#a855f7"></div>
+            <div class="swatch" style="background:#ec4899" data-color="#ec4899"></div>
+            <div class="swatch" style="background:#14b8a6" data-color="#14b8a6"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar-right">
+        <button class="action-btn" id="undoBtn" title="Undo (Ctrl+Z)">↩ Undo</button>
+        <button class="action-btn" id="redoBtn" title="Redo (Ctrl+Y)">↪ Redo</button>
+        <button class="action-btn danger" id="clearBtn" title="Clear canvas">🗑 Clear</button>
+        <button class="action-btn primary" id="saveBtn" title="Save (Ctrl+S)">💾 Save</button>
+      </div>
+    </header>
+
+    <main id="canvas-area">
+      <canvas id="canvas"></canvas>
+      <canvas id="preview-canvas"></canvas>
+    </main>
+
+    <div id="statusBar">
+      <span id="coordDisplay">x: 0, y: 0</span>
+      <span id="canvasSizeDisplay"></span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
